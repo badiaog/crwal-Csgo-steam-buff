@@ -67,7 +67,7 @@ class BuffCsgo:
         if page_text.get('data').get('items'):
             for item in page_text.get('data').get('items'):
                 info = {}
-                info['Buff饰品名称'] = item.get('name')
+                info['饰品名称'] = item.get('name')
                 info['Buff当前价格'] = item.get('quick_price')
                 info['Buff当前在售数量'] = item.get('sell_num')
                 self.item_datas.append(info)
@@ -106,7 +106,7 @@ class BuffCsgo:
     # 存储到csv
     def save_to_csv(self):
         df = pd.DataFrame(self.item_datas)
-        df = df.reindex(columns=['Buff饰品名称', 'Buff当前价格', 'Buff当前在售数量'])
+        df = df.reindex(columns=['饰品名称', 'Buff当前价格', 'Buff当前在售数量'])
         if os.path.exists(self.save_file_path) and os.path.getsize(self.save_file_path):
             df.to_csv(self.save_file_path, mode='a', encoding='utf-8', header=None, index=False)
         else:
