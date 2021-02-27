@@ -33,8 +33,8 @@ Python所写,爬虫小白的练手,代码有不少不合理的地方,望各位�
 ![image](https://github.com/badiaog/crwal-Csgo-steam-buff/blob/main/imgs/image.png)
 
 - 其中steam的饰品价格为美元 
-- Steam当前可获收益的计算公式为:steam饰品价格*当天美元汇率*0.85(steam卖出需15%手续费)
-- 倒卖比即Buff当前价格/Steam当前可获收益 可以理解为可以以多少折扣购入steam余额
+- Steam当前可获收益的计算公式为:steam饰品价格 * 当天美元汇率 * 0.85(steam卖出需15%手续费)
+- 倒卖比即Buff当前价格 / Steam当前可获收益 可以理解为可以以多少折扣购入steam余额
 
 
 - 声明:此代码仅个人小白学习练手,代码多有不合理之处望各位指点
