@@ -9,45 +9,52 @@ from urllib.parse import urlencode
 
 class BuffCsgo:
     def __init__(self, category, save_file_path, _, price_range):
-        # 貌似是一个时间戳类似的玩意 暂且放着
+        # 时间戳
         self._ = _
         # 类目
         self.category = category
         # 存储位置
         self.save_file_path = save_file_path
-        # 价格区间 从10起步
+        # 价格区间 从50起步
         self.price_range = price_range
         # 一个临时的存储当前页信息的列表
         self.item_datas = []
         # 不变的url
         self.base_url = 'https://buff.163.com/api/market/goods?'
+    # 获取当前时间戳
+    def get_current_time(self):
+        return round(time.time()*1000)
 
-    # buff要获取当前类目总页码必须点最后一页才能得到正确的页码数
+    # 获取页数
     def get_total_page(self):
         params = {
             'game': 'csgo',
-            'page_num': 2000,
+            'page_num': 1,
             'category_group': self.category,
-            'min_price': 10,
-            'max_price': 10 + self.price_range,
+            'min_price': 50,
+            'max_price': 50 + self.price_range,
             '_': self._
         }
         url = self.base_url + urlencode(params)
-        response = requests.get(url=url, headers=self.init_headers(), timeout=10)
-        if response.json().get('data'):
-            self._ += random.randint(1, 3)
-            total_page = response.json().get('data').get('total_page')
-            return total_page
+        try:
+            response = requests.get(url=url, headers=self.init_headers(), proxies=self.random_ip(), timeout=10)
+            if response.status_code == 200:
+                page_text = response.json()
+                if page_text.get('data'):
+                    total_page = page_text.get('data').get('total_page')
+                    return total_page
+        except requests.ConnectionError as e:
+            print("wrong in collecting total_page")
 
     def get_page(self):
          for page in range(1,self.get_total_page()+1):
-        #for page in range(1, 4):  # 测试
+         #for page in range(1, 4):  # 测试
             params = {
                 'game': 'csgo',
                 'page_num': page,
                 'category_group': self.category,
-                'min_price': 10,
-                'max_price': 10 + self.price_range,
+                'min_price': 50,
+                'max_price': 50 + self.price_range,
                 '_': self._
             }
             current_url = self.base_url + urlencode(params)
@@ -55,11 +62,11 @@ class BuffCsgo:
                 response = requests.get(url=current_url, headers=self.init_headers(), proxies = self.random_ip(),timeout=10)
                 if response.status_code == 200:
                     print(f'已获取第{page}页')
-                    self._ += random.randint(1, 3)
+                    self._ = self.get_current_time()
                     page_text = response.json()
                     self.parse_page(page_text)
                     self.save_to_csv()
-                    time.sleep(random.random() * 5)
+                    time.sleep(random.random() * 8)
             except requests.ConnectionError as e:
                 print('获取失败')
 
@@ -73,7 +80,7 @@ class BuffCsgo:
                 self.item_datas.append(info)
 
     def init_headers(self):
-        cookie = 'yourcookie'
+        cookie = 'yourcookie' # 输入你自己的cookie
         headers = {
             'User-Agent': UserAgent().random,
             'Cookie': cookie
